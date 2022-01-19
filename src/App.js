@@ -1,9 +1,12 @@
 import './App.css';
+import Register from './comps/Register';
 
 function App() {
   return (
-    <div className="App">
-      
+    <div className="row">
+      <div className="col-md-8 offset-md-2">
+        <Register />
+      </div>
     </div>
   );
 }
