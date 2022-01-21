@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
-const FormRegister = () => {
+const FormRegister = (props) => {
     const patientFields = {
         fullName: '',
         phone: '',
@@ -8,23 +8,36 @@ const FormRegister = () => {
         address: ''
     };
     
-    let { values, setValues } = useState(patientFields);
+    let [values, setValues] = useState(patientFields);
+    
+    useEffect(() => {
+        if (props.currentId === '') {
+            setValues({
+                ...patientFields
+            })
+        } else {
+            setValues({
+                ...props.dataPatients[props.currentId]
+            })
+        }
+    }, [props.currentId, props.dataPatients])
 
-    const inputChange = e => {
-        let { fullName, value } = e.target
+    const inputChanges = e => {
+        let { name, value } = e.target
         
         setValues({
             ...values,
-            [fullName]: value
+            [name]: value
         })
     }
 
     const submitChange = e => {
         e.preventDefault()
+        props.addEdit(values)
     }
 
     return (
-        <fom autoComplete="off" onSubmit="{submitChange}">
+        <form autoComplete="off" onSubmit={submitChange}>
             <div className="form-group input-group">
                 <div className="input-grou-prepend">
                     <div className="input-group-text">
@@ -32,8 +45,9 @@ const FormRegister = () => {
                     </div>
                 </div>
 
-                <input className="form-control" placeholder="Fullname" name="fullName" value={values.fullName} onChange={inputChange}></input>
+                <input className="form-control" placeholder="Name" name="fullName" value={values.fullName} onChange={inputChanges}></input>
             </div>
+            
             <div className="row">
                 <div className="form-group input-group col-md-6">
                     <div className="input-grou-prepend">
@@ -42,7 +56,7 @@ const FormRegister = () => {
                         </div>
                     </div>
 
-                    <input className="form-control" placeholder="Phone" name="phone" value={values.phone} onChange={inputChange}></input>
+                    <input className="form-control" placeholder="Phone" name="phone" value={values.phone} onChange={inputChanges}></input>
                 </div>
 
                 <div className="form-group input-group col-md-6">
@@ -52,17 +66,18 @@ const FormRegister = () => {
                         </div>
                     </div>
 
-                    <input className="form-control" placeholder="E-mail" name="email" value={values.email} onChange={inputChange}></input>
+                    <input className="form-control" placeholder="E-mail" name="email" value={values.email} onChange={inputChanges}></input>
                 </div>
             </div>
+            
             <div className="form-group input-group">
-                <div className="input-grou-prepend">
-
-                </div>
-
-                <textarea className="form-control" placeholder="Address" name="address" value={values.address} onChange={inputChange}></textarea>
+                <textarea className="form-control" placeholder="Address" name="address" value={values.address} onChange={inputChanges}></textarea>
             </div>
-        </fom>
+
+            <div className="form-group">
+                <input type="submit" value={ props.currentId === '' ? 'Save' : 'Update' } className="btn btn-primary btn-block"></input>
+            </div>
+        </form>
     );
 }
 
